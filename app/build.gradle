@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        applicationId "es.iesalandalus.chat"
+        minSdkVersion 25
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.navigation:navigation-fragment:2.2.2'
+    implementation 'androidx.navigation:navigation-ui:2.2.2'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //Para la Autentificación
+    implementation 'com.google.firebase:firebase-analytics:17.4.2'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
+
+    //Para la base de datos
+
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+
+    //Para la base de datos de las imagenes
+    implementation 'com.google.android.material:material:1.1.0'
+
+
+    //Para coger fotos de nuestra galeria
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'id.zelory:compressor:2.1.0'
+
+    //para el navigation view
+    def navigationVersion = "2.2.2"
+    def drawerLayoutVersion = "1.0.0"
+    implementation "androidx.drawerlayout:drawerlayout:$drawerLayoutVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+    implementation 'com.google.firebase:firebase-database:19.3.0'
+    implementation 'androidx.mediarouter:mediarouter:1.1.0'
+
+    //imagen circular
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+
+    //noinspection GradleCompatible
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+
+    //Diseño
+    //noinspection GradleDynamicVersion,GradleCompatible
+    implementation 'com.android.support:recyclerview-v7:26+' //Lista
+    //noinspection GradleDynamicVersion,GradleCompatible
+    implementation 'com.android.support:cardview-v7:26+' //Tarjetas
+
+    //para el chat
+    implementation 'com.scaledrone:scaledrone-java:0.6.0'
+
+
+}

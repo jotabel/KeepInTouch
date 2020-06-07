@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">KeepInTouch</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="tituloLogin">Iniciar Sesión</string>
+    <string name="etNumeroTlf">Escribe tu número de teléfono</string>
+    <string name="etCodigo">Código de verficación</string>
+    <string name="btnEnviarCodigo">Enviar Código</string>
+    <string name="btnLogin">Iniciar Sesion</string>
+    <string name="signed_success">Se ha iniciado sesión correctamente</string>
+    <string name="sign_credential_fail">Ha habido un error</string>
+
+    <string name="tvNombreCrearPerfil">Introduce tu nombre de perfil</string>
+    <string name="tvDescCrearPerfil">Introduce tu descripción</string>
+    <string name="etNombreCrearPerfil">Introduce tu nombre...</string>
+    <string name="etDescCrearPerfil">Introduce tu descripción...</string>
+    <string name="btnCrearPerfil">Selecciona una imagen de perfil</string>
+    <string name="btnContinuar">Continuar</string>
+
+    //menu del nav
+    <string name="navGrupo">Nuevo grupo</string>
+    <string name="navContactos">Contactos</string>
+    <string name="navAjustes">Ajustes</string>
+    <string name="navigation_drawer_open">Titulo</string>
+    <string name="navigation_drawer_close">Cerrar</string>
+
+    //menu de ajustes
+    <string name="ajusNombre">Nombre de ususario</string>
+    <string name="ajusCuenta">Cuenta</string>
+    <string name="ajusDescripcion">Descripción sobre ti</string>
+    <string name="ajusModUsuario">Toca para modificar el nombre de usuario</string>
+    <string name="ajusModDescripcion">Añade una descripción sobre ti</string>
+    <string name="ajusModImagen">Cambia la imagen de perfil</string>
+
+    //modificar nombre de usuario
+    <string name="modNombreExplicacion">Puedes elegir el nombre como quieres que se muestre a las personas cuando se metan en tu perfil, y para que te busquen desde la aplicación chat. Puedes usar a-z, 0-9 y guiones bajos.</string>
+    <string name="modNombreBoton">Aceptar</string>
+    <string name="modNombreHintET">Nombre</string>
+
+    //modificar descripcion del usuario
+    <string name="modDescripcionExplicacion">Puedes hacer una descripción sobre ti. Cualquier persona que abra tu perfil podrá ver tu descripción.</string>
+    <string name="modDescripcionHintET">Descripción...</string>
+    <string name="modDescripcionBoton">Guardar</string>
+
+    //modificar imagen del usuario
+    <string name="modImagenBotonCambiarImagen">Cambiar imagen</string>
+    <string name="modImagenBotonAceptar">Guardar Cambios</string>
+
+    //mostrar contacto
+    <string name="mostContactoInformacion">Información</string>
+    <string name="mostContactoMovil">Móvil</string>
+    <string name="mostContactoDescripcion">Descripción</string>
+
+    //verChat
+    <string name="tvVerChatHintEscribir">Escribe un mensaje...</string>
+
+</resources>

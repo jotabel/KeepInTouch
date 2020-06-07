@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1063106814817",
+    "firebase_url": "https://proyectochat-d3ed4.firebaseio.com",
+    "project_id": "proyectochat-d3ed4",
+    "storage_bucket": "proyectochat-d3ed4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063106814817:android:e073c0276ff9034de2db20",
+        "android_client_info": {
+          "package_name": "es.iesalandalus.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1063106814817-5dp7kopt21m0jc3sncpvnef9b8jsj7hn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "es.iesalandalus.chat",
+            "certificate_hash": "d27d9b5bc06c28334b0cf8987c84a4b057fce61b"
+          }
+        },
+        {
+          "client_id": "1063106814817-8bvdq680fobhh3po8lfj7q340k2pph01.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT_6CynKOwx88gpxSozReatMZ93ZqWv6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1063106814817-8bvdq680fobhh3po8lfj7q340k2pph01.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
