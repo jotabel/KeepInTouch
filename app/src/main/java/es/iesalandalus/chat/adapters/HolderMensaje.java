@@ -1,6 +1,7 @@
 package es.iesalandalus.chat.adapters;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,15 +12,44 @@ import es.iesalandalus.chat.R;
 
 public class HolderMensaje extends RecyclerView.ViewHolder {
 
+    private TextView nombre;
     private TextView mensaje;
     private TextView hora;
+    private CircleImageView fotoMensaje;
+    private ImageView fotoMensajeEnviado;
 
     public HolderMensaje(@NonNull View itemView) {
         super(itemView);
 
-        mensaje=itemView.findViewById(R.id.etVerChatMensaje);
-        hora=itemView.findViewById(R.id.tvChatsHora);
+        nombre=itemView.findViewById(R.id.tvVerChatMensajeNombre);
+        mensaje=itemView.findViewById(R.id.tvVerChatMensajeMensaje);
+        hora=itemView.findViewById(R.id.tvVerChatMensajeHora);
+        fotoMensaje=itemView.findViewById(R.id.ivVerChatMensaje);
+        fotoMensajeEnviado=itemView.findViewById(R.id.mensajeFoto);
+    }
 
+    public ImageView getFotoMensajeEnviado() {
+        return fotoMensajeEnviado;
+    }
+
+    public void setFotoMensajeEnviado(ImageView fotoMensajeEnviado) {
+        this.fotoMensajeEnviado = fotoMensajeEnviado;
+    }
+
+    public TextView getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(TextView nombre) {
+        this.nombre = nombre;
+    }
+
+    public CircleImageView getFotoMensaje() {
+        return fotoMensaje;
+    }
+
+    public void setFotoMensaje(CircleImageView fotoMensaje) {
+        this.fotoMensaje = fotoMensaje;
     }
 
     public TextView getMensaje() {

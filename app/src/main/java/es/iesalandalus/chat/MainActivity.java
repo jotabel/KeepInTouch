@@ -29,7 +29,10 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.sql.SQLOutput;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import es.iesalandalus.chat.adapters.ChatsAdapter;
 import es.iesalandalus.chat.models.Chat;
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ChatsAdapter eAdapter;
     private RecyclerView eRecyclerView;
     private ArrayList<Chat> arrayChat=new ArrayList<>();
+    private String fecha, mensaje;
 
 
     @Override
@@ -120,8 +124,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                     for(DataSnapshot losChatsGuardados : dataSnapshot.child("chats").getChildren()){
 
-                                        Chat c = new Chat(data.child("nombre").getValue().toString(),losChatsGuardados.child(losChatsGuardados.getKey()).child("fecha").getValue().toString(),
-                                                data.child("imagen").getValue().toString(),losChatsGuardados.child(losChatsGuardados.getKey()).child("mensaje").getValue().toString());
+
+                                        for(DataSnapshot snap : losChatsGuardados.getChildren()){
+
+                                            if (snap.exists()) {
+                                                mensaje = snap.child("mensaje").getValue().toString();
+                                                Long codigoHora = Long.parseLong(snap.child("hora").getValue().toString());
+                                                Date d= new Date(codigoHora);
+                                                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+                                                fecha=sdf.format(d);
+                                            }
+                                        }
+
+                                        Chat c = new Chat(data.child("nombre").getValue().toString(),fecha,
+                                                data.child("imagen").getValue().toString(),mensaje,losChatsGuardados.getKey());
+
 
                                         arrayChat.add(c);
 
@@ -137,6 +154,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     eAdapter = new ChatsAdapter(R.layout.mostrar_chats, arrayChat);
+
+                    eAdapter.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //Aquí se implenta que cuando se pulse una contacto pues se pueda ver la información del mismo
+
+                            Intent i = new Intent(MainActivity.this, VerChatActivity.class);
+                            i.putExtra("idconversacion",arrayChat.get(eRecyclerView.getChildAdapterPosition(v)).getUid());
+                            i.putExtra("numero",numeroTelefono);
+                            i.putExtra("nombre",snombre);
+                            i.putExtra("imagen",imagen);
+                            startActivity(i);
+                        }
+                    });
 
                     eRecyclerView.setAdapter(eAdapter);
 

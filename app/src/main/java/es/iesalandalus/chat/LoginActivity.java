@@ -17,6 +17,9 @@ public class LoginActivity extends AppCompatActivity{
     private EditText etTelefono;
     private Spinner spinner;
 
+
+    final String patternNumeros = "[0-9]{5,15}";
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -35,7 +38,9 @@ public class LoginActivity extends AppCompatActivity{
 
                 String number = etTelefono.getText().toString().trim();
 
-                if(number.isEmpty() || number.length()<9){
+
+
+                if(number.isEmpty() || number.length()<9 || pregMatch(patternNumeros,number)){
                     etTelefono.setError("Number is required");
                     etTelefono.requestFocus();
                     return;
@@ -51,6 +56,10 @@ public class LoginActivity extends AppCompatActivity{
 
         });
 
+    }
+
+    public static boolean pregMatch(String pattern, String content) {
+        return content.matches(pattern);
     }
 
     @Override

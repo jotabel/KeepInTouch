@@ -2,13 +2,22 @@ package es.iesalandalus.chat.models;
 
 public class Chat {
 
-    private String nombre,hora,imagen,mensaje;
+    private String nombre,hora,imagen,mensaje,uid;
 
-    public Chat(String nombre, String hora, String imagen, String mensaje) {
+    public Chat(String nombre, String hora, String imagen, String mensaje,String uid) {
         this.nombre = nombre;
         this.hora = hora;
         this.imagen = imagen;
         this.mensaje = mensaje;
+        this.uid=uid;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getNombre() {
@@ -41,5 +50,16 @@ public class Chat {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "nombre='" + nombre + '\'' +
+                ", hora='" + hora + '\'' +
+                ", imagen='" + imagen + '\'' +
+                ", mensaje='" + mensaje + '\'' +
+                ", uid='" + uid + '\'' +
+                '}';
     }
 }

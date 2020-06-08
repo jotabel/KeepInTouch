@@ -1,21 +1,26 @@
 package es.iesalandalus.chat;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -23,14 +28,27 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
-import org.w3c.dom.Text;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLOutput;
+import java.util.Date;
+import java.util.Objects;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import es.iesalandalus.chat.adapters.MensajesAdapter;
 import es.iesalandalus.chat.models.Mensajes;
+import id.zelory.compressor.Compressor;
 
 public class VerChatActivity extends AppCompatActivity {
 
@@ -39,14 +57,23 @@ public class VerChatActivity extends AppCompatActivity {
     private RecyclerView rvMensajes;
     private EditText etMensaje;
     private ImageButton btnEnviar;
+    private ImageButton btnEnviarFoto;
 
-    private String numeroTelfChat;
-    private String snombre,simagen;
+    private String numeroTelfChat,nombre,imagen;
+    private String snombre,simagen,lafotoenviada,nombreImagen;
+
+    private String idConversacion;
+
+    private static final int PHOTO_SEND = 1;
 
 
     FirebaseDatabase miBase;
     DatabaseReference miReferencia;
     FirebaseAuth firebase;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+
+    Bitmap thumb_bitmap = null;
 
     private MensajesAdapter adapter;
 
@@ -59,6 +86,12 @@ public class VerChatActivity extends AppCompatActivity {
         cargarBundles();
         iniciarFirebase();
         encontarPerfil();
+        cargarReferencias();
+
+        Date fecha = new Date();
+        nombreImagen=fecha.toString()+"comprimido.jpg";
+
+        storage = FirebaseStorage.getInstance();
 
         adapter=new MensajesAdapter(this);
         LinearLayoutManager l = new LinearLayoutManager(this);
@@ -68,7 +101,19 @@ public class VerChatActivity extends AppCompatActivity {
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                miReferencia.push().setValue(new Mensajes(numeroTelfChat,"00:00",etMensaje.getText().toString(),"1"));
+                if(idConversacion.length()>1){
+
+                    miReferencia.child("chats").child(idConversacion).push().setValue(new MensajeEnviar(
+                            numeroTelfChat,etMensaje.getText().toString(),"1",nombre,imagen, ServerValue.TIMESTAMP));
+                }else{
+                    idConversacion= UUID.randomUUID().toString();
+
+                    System.out.println("numerotlf: "+numeroTelfChat+" mensaje: "+etMensaje.getText().toString()+" Hora: "+ServerValue.TIMESTAMP.toString());
+
+                    miReferencia.child("chats").child(idConversacion).push().setValue(new MensajeEnviar(
+                            numeroTelfChat,etMensaje.getText().toString(),"1",nombre,imagen, ServerValue.TIMESTAMP));
+                }
+                etMensaje.setText("");
             }
         });
 
@@ -76,18 +121,30 @@ public class VerChatActivity extends AppCompatActivity {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-
                 setScrollbar();
-
             }
         });
 
-        miReferencia.addChildEventListener(new ChildEventListener() {
+        btnEnviarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("image/jpeg");
+                i.putExtra(Intent.EXTRA_LOCAL_ONLY,true);
+                startActivityForResult(Intent.createChooser(i,"Selecciona una foto"),1);
+            }
+        });
+
+        miReferencia.child("chats").child(idConversacion).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                Mensajes m = dataSnapshot.getValue(Mensajes.class);
-                adapter.addMensaje(m);
+                if(dataSnapshot.exists()){
+
+                    MensajeRecibir m = dataSnapshot.getValue(MensajeRecibir.class);
+                    adapter.addMensaje(m);
+
+                }
 
             }
 
@@ -128,12 +185,16 @@ public class VerChatActivity extends AppCompatActivity {
         rvMensajes=findViewById(R.id.message_view);
         etMensaje=findViewById(R.id.etVerChatMensaje);
         btnEnviar=findViewById(R.id.btnVerChatEnviar);
+        btnEnviarFoto=findViewById(R.id.ibGaleria);
 
     }
 
     public void cargarBundles(){
 
-        numeroTelfChat=getIntent().getStringExtra("numeroTelfChat");
+        numeroTelfChat=getIntent().getStringExtra("numero");
+        idConversacion=getIntent().getStringExtra("idconversacion");
+        nombre=getIntent().getStringExtra("nombre");
+        imagen=getIntent().getStringExtra("imagen");
 
     }
 
@@ -152,6 +213,8 @@ public class VerChatActivity extends AppCompatActivity {
         }
     }
 
+
+
     public void encontarPerfil(){
 
         miReferencia.child("perfiles").addValueEventListener(new ValueEventListener() {
@@ -166,6 +229,12 @@ public class VerChatActivity extends AppCompatActivity {
                             simagen=dataSnapshot.child("imagen").getValue().toString();
                             snombre=dataSnapshot.child("nombre").getValue().toString();
 
+                        }
+
+                        if(ds.child("uid").equals(firebase.getCurrentUser().getUid())){
+                            nombre = dataSnapshot.child("nombre").getValue().toString();
+                            imagen = dataSnapshot.child("imagen").getValue().toString();
+                            numeroTelfChat = dataSnapshot.child("numero").getValue().toString();
                         }
 
                     }
@@ -186,4 +255,77 @@ public class VerChatActivity extends AppCompatActivity {
 
     }
 
+    public void cargarReferencias(){
+
+        if(getIntent().getStringExtra("idconversacion").length()>0)
+            storageReference= FirebaseStorage.getInstance().getReference().child("imagenes_chats").child(idConversacion);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode== PHOTO_SEND && resultCode == Activity.RESULT_OK){
+            Uri imageuri=CropImage.getPickImageResultUri(this,data);
+
+            //Recortar imagen
+            CropImage.activity(imageuri).setGuidelines(CropImageView.Guidelines.ON)
+                    .setRequestedSize(640,640)
+                    .setAspectRatio(2,1).start(VerChatActivity.this);
+
+        }
+
+        if(requestCode==CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode==RESULT_OK){
+                Uri resultUri = result.getUri();
+                File url=new File(resultUri.getPath());
+
+                //Ahora vamos a comprimir la imagen.
+                try{
+                    thumb_bitmap=new Compressor(this).setMaxWidth(640).setMaxHeight(480)
+                            .setQuality(90).compressToBitmap(url);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                thumb_bitmap.compress(Bitmap.CompressFormat.JPEG,90,byteArrayOutputStream);
+                final byte [] thumb_byte = byteArrayOutputStream.toByteArray();
+
+                //fin del compresor.
+
+                final StorageReference ref=storageReference.child(nombreImagen);
+                UploadTask uploadTask=ref.putBytes(thumb_byte);
+
+                //subir imagen en storage
+                Task<Uri> uriTask=uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+
+                        if(!task.isSuccessful()){
+                            throw Objects.requireNonNull(task.getException());
+                        }
+
+                        return ref.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        Uri downloaduri = task.getResult();
+
+                        lafotoenviada=downloaduri.toString();
+
+                        System.out.println(lafotoenviada);
+
+                        MensajeEnviar m = new MensajeEnviar(numeroTelfChat,lafotoenviada,"Foto","2",nombre,imagen,ServerValue.TIMESTAMP);
+                        miReferencia.child("chats").child(idConversacion).push().setValue(m);
+
+
+                    }
+                });
+
+            }
+        }
+
+    }
 }
