@@ -7,8 +7,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvEntradas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ff7043"
+        android:layout_height="match_parent"
+        android:background="@drawable/texturafondo"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

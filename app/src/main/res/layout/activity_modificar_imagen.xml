@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/fondo_modificar"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp">
@@ -26,7 +27,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
-            android:text="@string/modImagenBotonCambiarImagen" />
+            android:background="@drawable/boton"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/modImagenBotonCambiarImagen"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btnModImagGuardar"
@@ -34,6 +39,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
-            android:text="@string/modImagenBotonAceptar" />
+            android:background="@drawable/boton"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/modImagenBotonAceptar"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

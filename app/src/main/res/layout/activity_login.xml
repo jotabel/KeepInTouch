@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fondo_ver_contactos"
     tools:context=".LoginActivity">
 
     <TextView
@@ -13,6 +14,7 @@
         android:layout_marginTop="70dp"
         android:text="@string/tituloLogin"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,17 +27,20 @@
         android:layout_marginStart="75dp"
         android:layout_marginTop="50dp"
         android:text="@string/etNumeroTlf"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
         android:id="@+id/etTelefono"
-        android:layout_width="165dp"
+        android:layout_width="150dp"
         android:layout_height="45dp"
         android:layout_marginEnd="10dp"
         android:ems="8"
         android:inputType="phone"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/spPais"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/spPais" />
@@ -45,18 +50,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:background="@drawable/boton"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:text="@string/btnEnviarCodigo"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etTelefono" />
 
     <Spinner
         android:id="@+id/spPais"
-        android:layout_width="175dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="10dp"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toStartOf="@+id/etTelefono"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

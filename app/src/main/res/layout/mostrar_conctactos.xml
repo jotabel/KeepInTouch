@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#AEF44336"
+        android:background="#1E85B8"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
@@ -33,7 +33,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:src="@drawable/generica"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvContactosNombre"
@@ -46,6 +46,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:text="TextView"
+            android:textColor="@color/mr_cast_meta_black_scrim"
             android:textSize="20sp" />
 
     </LinearLayout>
@@ -54,8 +55,8 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4EBFD5"
-        android:textSize="4dp" />
+        android:background="@android:color/darker_gray"
+        android:textSize="1dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

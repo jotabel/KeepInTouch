@@ -1,6 +1,8 @@
 package es.iesalandalus.chat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -19,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,12 +49,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DatabaseReference miReferencia;
     FirebaseAuth firebase;
 
+    private String loschats;
+
+    private String codigochat;
+
     private DrawerLayout drawerLayout;
     NavigationView navigationView;
 
     String imagen="https://firebasestorage.googleapis.com/v0/b/proyectochat-d3ed4.appspot.com/o/img_comprimidas%2Fgenerica.jpg?alt=media&token=2bb98c5d-c677-4fc7-8cdc-b074c056106c";
 
     private String sdescripcion, snombre;
+
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
     ImageView verImagen;
     TextView nombre,descripcion;
@@ -68,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         iniciarFirebase();
 
+        controlarPerimisosContactos();
+
         cargarViewsChats();
 
         arrayChat=new ArrayList<>();
@@ -80,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         numeroTelefono = getIntent().getStringExtra("numeroTelefono");
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        /*FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,10 +100,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
             }
         });
-
+        */
         iniciarNavigation();
 
 
+    }
+
+    public void controlarPerimisosContactos(){
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.READ_CONTACTS)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
 
     public void cargarViewsChats(){
@@ -120,33 +181,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             for (DataSnapshot data : dataSnapshot.child("perfiles").getChildren()){
 
-                                if(data.child("numero").getValue().equals(ds.getValue())){
+                                System.out.println("Esto que se?"+ ds.getKey());
+                                System.out.println("y esto? "+data.child("chats").getKey());
 
-                                    for(DataSnapshot losChatsGuardados : dataSnapshot.child("chats").getChildren()){
+                                if(data.child("chats").child(ds.getKey()).exists()) {
+                                        codigochat = ds.getKey();
+                                        if (data.child("numero").getValue().equals(ds.getValue()) && ds.getKey().equals(codigochat)) {
+
+                                            for (DataSnapshot losChatsGuardados : dataSnapshot.child("chats").getChildren()) {
 
 
-                                        for(DataSnapshot snap : losChatsGuardados.getChildren()){
+                                                for (DataSnapshot snap : losChatsGuardados.getChildren()) {
 
-                                            if (snap.exists()) {
-                                                mensaje = snap.child("mensaje").getValue().toString();
-                                                Long codigoHora = Long.parseLong(snap.child("hora").getValue().toString());
-                                                Date d= new Date(codigoHora);
-                                                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-                                                fecha=sdf.format(d);
+                                                    if (snap.exists()) {
+                                                        mensaje = snap.child("mensaje").getValue().toString();
+                                                        Long codigoHora = Long.parseLong(snap.child("hora").getValue().toString());
+                                                        Date d = new Date(codigoHora);
+                                                        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+                                                        fecha = sdf.format(d);
+                                                        loschats = losChatsGuardados.getKey();
+                                                    }
+                                                }
+
+
                                             }
-                                        }
-
-                                        Chat c = new Chat(data.child("nombre").getValue().toString(),fecha,
-                                                data.child("imagen").getValue().toString(),mensaje,losChatsGuardados.getKey());
 
 
-                                        arrayChat.add(c);
+                                            Chat c = new Chat(data.child("nombre").getValue().toString(), fecha,
+                                                    data.child("imagen").getValue().toString(), mensaje, loschats);
+                                            arrayChat.add(c);
+
+
 
                                     }
-
-
                                 }
-
                             }
 
                         }
@@ -164,7 +232,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             i.putExtra("idconversacion",arrayChat.get(eRecyclerView.getChildAdapterPosition(v)).getUid());
                             i.putExtra("numero",numeroTelefono);
                             i.putExtra("nombre",snombre);
-                            i.putExtra("imagen",imagen);
+                            i.putExtra("imagen",arrayChat.get(eRecyclerView.getChildAdapterPosition(v)).getImagen());
+                            i.putExtra("main","viene");
+                            i.putExtra("otroNombre",arrayChat.get(eRecyclerView.getChildAdapterPosition(v)).getNombre());
                             startActivity(i);
                         }
                     });
@@ -198,9 +268,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

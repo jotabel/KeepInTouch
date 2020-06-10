@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fondo_modificar"
     tools:context=".ModificarDescripcionActivity">
 
     <LinearLayout
@@ -42,8 +43,10 @@
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
             android:layout_marginRight="40dp"
+            android:background="@drawable/boton"
             android:gravity="center"
             android:onClick="cambiarDescripcion"
-            android:text="@string/modDescripcionBoton" />
+            android:text="@string/modDescripcionBoton"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

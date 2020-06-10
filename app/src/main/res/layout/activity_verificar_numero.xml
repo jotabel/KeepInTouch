@@ -10,6 +10,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/fondo_ver_contactos"
         android:orientation="vertical"
         android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,17 +24,18 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
-            android:text="Wait for the code I sent You"
+            android:text="@string/tvCodigoVerficacion"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
 
         <ProgressBar
-            android:visibility="gone"
             android:id="@+id/progressbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textView"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/etCodigo"
@@ -44,9 +46,10 @@
             android:layout_marginTop="10dp"
             android:digits="0123456789"
             android:drawablePadding="10dp"
-            android:hint="enter verification code"
+            android:hint="@string/etCodigo"
             android:inputType="phone"
-            android:maxLength="10" />
+            android:maxLength="10"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btnLogin"
@@ -55,7 +58,9 @@
             android:layout_below="@id/etCodigo"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:background="@color/colorPrimaryDark"
+            android:background="@drawable/boton"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="@string/btnLogin"
             android:textAllCaps="false"
             android:textColor="#cdd8f1" />

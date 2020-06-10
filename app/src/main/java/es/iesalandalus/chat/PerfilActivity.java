@@ -42,6 +42,8 @@ import es.iesalandalus.chat.models.Telefono;
 import es.iesalandalus.chat.models.chats;
 import id.zelory.compressor.Compressor;
 
+import static es.iesalandalus.chat.LoginActivity.pregMatch;
+
 public class PerfilActivity extends AppCompatActivity {
 
     private String numeroTelefono,number;
@@ -63,6 +65,9 @@ public class PerfilActivity extends AppCompatActivity {
     FirebaseDatabase miBase;
     DatabaseReference miReferencia;
     FirebaseAuth firebase;
+
+    final String patternNombre = "[a-zA-Z0-9]+";
+    final String patterDescripcion = "[a-zA-Z0-9]+";
 
 
     @Override
@@ -220,22 +225,34 @@ public class PerfilActivity extends AppCompatActivity {
 
         cargarDatos();
 
-        chats e = new chats(firebase.getCurrentUser().getUid(),numeroTelefono,snombre,sdescripcion,nomImagen);
-        miReferencia.child(TABLA).child(e.getUid()).setValue(e);
+        if(!pregMatch(patternNombre,snombre) || !pregMatch(patterDescripcion,sdescripcion)){
+            if(snombre.length()<5 || snombre.length()>15){
+                nombre.setError("Escribe un nombre con letras y números de 5 a 15 caracteres.");
+            }
+            if(sdescripcion.length()<0 || sdescripcion.length()>100){
+                descripcion.setError("Escribe una descripción con letras y números de 0 a 100 caracteres.");
+            }
+        } else {
 
-        Telefono t = new Telefono(firebase.getUid(),numeroTelefono);
-        miReferencia.child("Telefonos").child(t.getUid()).setValue(t.getNumero());
+            chats e = new chats(firebase.getCurrentUser().getUid(),numeroTelefono,snombre,sdescripcion,nomImagen);
+            miReferencia.child(TABLA).child(e.getUid()).setValue(e);
 
-        Intent intent = new Intent(PerfilActivity.this, MainActivity.class);
-        intent.putExtra("numeroTelefono",numeroTelefono);
-        startActivity(intent);
-        finish();
+            Telefono t = new Telefono(firebase.getUid(),numeroTelefono);
+            miReferencia.child("Telefonos").child(t.getUid()).setValue(t.getNumero());
+
+            Intent intent = new Intent(PerfilActivity.this, MainActivity.class);
+            intent.putExtra("numeroTelefono",numeroTelefono);
+            startActivity(intent);
+            finish();
+        }
+
+
     }
 
     public void btnguardar(View v){
 
         if(simagen.isEmpty()){
-            guardar("generica.jpg");
+            guardar("https://firebasestorage.googleapis.com/v0/b/proyectochat-d3ed4.appspot.com/o/img_comprimidas%2Fgenerica.jpg?alt=media&token=2bb98c5d-c677-4fc7-8cdc-b074c056106c");
         }else{
             guardar(simagen);
         }

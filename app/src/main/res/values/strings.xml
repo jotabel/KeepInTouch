@@ -10,6 +10,8 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
+    <string name="tvCodigoVerficacion">Esperando al código de verificación</string>
+
     <string name="tituloLogin">Iniciar Sesión</string>
     <string name="etNumeroTlf">Escribe tu número de teléfono</string>
     <string name="etCodigo">Código de verficación</string>
@@ -41,12 +43,12 @@
     <string name="ajusModImagen">Cambia la imagen de perfil</string>
 
     //modificar nombre de usuario
-    <string name="modNombreExplicacion">Puedes elegir el nombre como quieres que se muestre a las personas cuando se metan en tu perfil, y para que te busquen desde la aplicación chat. Puedes usar a-z, 0-9 y guiones bajos.</string>
+    <string name="modNombreExplicacion">Puedes elegir el nombre como quieres que se muestre a las personas cuando se metan en tu perfil, y para que te busquen desde la aplicación chat. Puedes usar a-Z y 0-9.</string>
     <string name="modNombreBoton">Aceptar</string>
     <string name="modNombreHintET">Nombre</string>
 
     //modificar descripcion del usuario
-    <string name="modDescripcionExplicacion">Puedes hacer una descripción sobre ti. Cualquier persona que abra tu perfil podrá ver tu descripción.</string>
+    <string name="modDescripcionExplicacion">Puedes hacer una descripción sobre ti. Cualquier persona que abra tu perfil podrá ver tu descripción. Puedes usar de a-z y 0-9</string>
     <string name="modDescripcionHintET">Descripción...</string>
     <string name="modDescripcionBoton">Guardar</string>
 

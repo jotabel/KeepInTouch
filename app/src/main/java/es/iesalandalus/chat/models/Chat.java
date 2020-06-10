@@ -12,6 +12,9 @@ public class Chat {
         this.uid=uid;
     }
 
+    public Chat() {
+    }
+
     public String getUid() {
         return uid;
     }

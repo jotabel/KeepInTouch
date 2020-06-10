@@ -18,7 +18,7 @@ public class LoginActivity extends AppCompatActivity{
     private Spinner spinner;
 
 
-    final String patternNumeros = "[0-9]{5,15}";
+    final String patternNumeros = "[0-9]";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -37,8 +37,6 @@ public class LoginActivity extends AppCompatActivity{
                 String code = PaisesClase.countryAreaCodes[spinner.getSelectedItemPosition()];
 
                 String number = etTelefono.getText().toString().trim();
-
-
 
                 if(number.isEmpty() || number.length()<9 || pregMatch(patternNumeros,number)){
                     etTelefono.setError("Number is required");

@@ -4,13 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#F0998D"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#AEF44336"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
@@ -42,6 +40,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:text="TextView"
+                android:textColor="@android:color/black"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -57,14 +56,17 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="20dp"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tvVerChatMensajeHora"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:text="15:25" />
+                    android:text="15:25"
+                    android:textColor="@android:color/black" />
 
             </LinearLayout>
 
@@ -84,8 +86,8 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4EBFD5"
-        android:textSize="4dp" />
+        android:background="@android:color/darker_gray"
+        android:textSize="1dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

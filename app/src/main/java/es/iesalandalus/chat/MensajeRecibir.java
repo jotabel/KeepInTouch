@@ -25,4 +25,11 @@ public class MensajeRecibir extends Mensajes {
     public void setHora(Long hora) {
         this.hora = hora;
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+" MensajeRecibir{" +
+                "hora=" + hora +
+                '}';
+    }
 }

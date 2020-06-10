@@ -16,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static es.iesalandalus.chat.LoginActivity.pregMatch;
+
 public class ModificarNombreActivity extends AppCompatActivity {
 
     private EditText nombre;
@@ -24,6 +26,8 @@ public class ModificarNombreActivity extends AppCompatActivity {
     FirebaseDatabase miBase;
     DatabaseReference miReferencia;
     FirebaseAuth firebase;
+
+    final String patternNombre = "[a-zA-Z0-9\\s]+";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,33 +50,38 @@ public class ModificarNombreActivity extends AppCompatActivity {
     public void cambiarNombre(View view){
 
         snombre = nombre.getText().toString();
-        if(snombre!=inombre){
+        if(!pregMatch(patternNombre,snombre) || snombre.length()>15 || snombre.length()<5){
+            nombre.setError("Escribe un nombre con letras y números de 5 a 15 caracteres.");
+        }
+        else {
+            if (snombre != inombre) {
 
-            miReferencia.child("perfiles/"+firebase.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
+                miReferencia.child("perfiles/" + firebase.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
 
-                        DatabaseReference referencia = miReferencia.child("perfiles/"+firebase.getCurrentUser().getUid());
-                        referencia.child("nombre").setValue(snombre);
+                            DatabaseReference referencia = miReferencia.child("perfiles/" + firebase.getCurrentUser().getUid());
+                            referencia.child("nombre").setValue(snombre);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                }
+                });
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
+            }
+            Intent i = new Intent(ModificarNombreActivity.this, AjustesActivity.class);
+            i.putExtra("numeroTelefono", inumero);
+            i.putExtra("nombreUsuario", snombre);
+            i.putExtra("descripcion", idescripcion);
+            i.putExtra("imagen", iimagen);
+            startActivity(i);
+            finish();
         }
-        Intent i = new Intent(ModificarNombreActivity.this, AjustesActivity.class);
-        i.putExtra("numeroTelefono",inumero);
-        i.putExtra("nombreUsuario",snombre);
-        i.putExtra("descripcion",idescripcion);
-        i.putExtra("imagen",iimagen);
-        startActivity(i);
-        finish();
 
     }
 

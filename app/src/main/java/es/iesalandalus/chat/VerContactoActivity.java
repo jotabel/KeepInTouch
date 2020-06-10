@@ -52,6 +52,8 @@ public class VerContactoActivity extends AppCompatActivity {
                 //Aquí hay que poner que se crea un chat nuevo
                 Intent i = new Intent(VerContactoActivity.this, VerChatActivity.class);
                 i.putExtra("idconversacion","");
+                i.putExtra("otroNumero",snumero);
+                i.putExtra("main","");
                 startActivity(i);
                 finish();
             }

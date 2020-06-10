@@ -16,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static es.iesalandalus.chat.LoginActivity.pregMatch;
+
 public class ModificarDescripcionActivity extends AppCompatActivity {
 
     private EditText descripcion;
@@ -24,6 +26,8 @@ public class ModificarDescripcionActivity extends AppCompatActivity {
     FirebaseDatabase miBase;
     DatabaseReference miReferencia;
     FirebaseAuth firebase;
+
+    final String patterDescripcion = "[a-zA-Z0-9\\s]+";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,34 +52,39 @@ public class ModificarDescripcionActivity extends AppCompatActivity {
     public void cambiarDescripcion(View view){
 
         sdescripcion = descripcion.getText().toString();
-        if(sdescripcion!=idescripcion){
 
-            miReferencia.child("perfiles/"+firebase.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
+        if(!pregMatch(patterDescripcion,sdescripcion) || sdescripcion.length()>100){
+            descripcion.setError("Escribe una descripción con letras y números de 0 a 100 caracteres.");
+        }
+        else {
+            if (sdescripcion != idescripcion) {
 
-                        DatabaseReference referencia = miReferencia.child("perfiles/"+firebase.getCurrentUser().getUid());
-                        referencia.child("descripcion").setValue(sdescripcion);
+                miReferencia.child("perfiles/" + firebase.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+
+                            DatabaseReference referencia = miReferencia.child("perfiles/" + firebase.getCurrentUser().getUid());
+                            referencia.child("descripcion").setValue(sdescripcion);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                }
+                });
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
+            }
+            Intent i = new Intent(ModificarDescripcionActivity.this, AjustesActivity.class);
+            i.putExtra("numeroTelefono", inumero);
+            i.putExtra("nombreUsuario", inombre);
+            i.putExtra("descripcion", sdescripcion);
+            i.putExtra("imagen", iimagen);
+            startActivity(i);
+            finish();
         }
-        Intent i = new Intent(ModificarDescripcionActivity.this, AjustesActivity.class);
-        i.putExtra("numeroTelefono",inumero);
-        i.putExtra("nombreUsuario",inombre);
-        i.putExtra("descripcion",sdescripcion);
-        i.putExtra("imagen",iimagen);
-        startActivity(i);
-        finish();
-
     }
 
     public void iniciarFirebase(){

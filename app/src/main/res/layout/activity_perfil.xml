@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fondo_ver_contactos"
     tools:context=".PerfilActivity">
 
     <TextView
@@ -13,6 +14,7 @@
         android:layout_marginTop="30dp"
         android:text="@string/tvNombreCrearPerfil"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@android:color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/etNombre"
         app:layout_constraintStart_toStartOf="@+id/etNombre"
@@ -27,6 +29,7 @@
         android:hint="@string/etNombreCrearPerfil"
         android:inputType="textPersonName"
         android:maxLength="20"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/tvDesc"
         app:layout_constraintStart_toStartOf="@+id/tvDesc"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -38,6 +41,7 @@
         android:layout_marginTop="30dp"
         android:text="@string/tvDescCrearPerfil"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@android:color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/etDesc"
         app:layout_constraintStart_toStartOf="@+id/etDesc"
@@ -52,6 +56,7 @@
         android:hint="@string/etDescCrearPerfil"
         android:inputType="textPersonName"
         android:maxLength="100"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/shape_layout"
         app:layout_constraintStart_toStartOf="@+id/shape_layout"
         app:layout_constraintTop_toBottomOf="@+id/tvDesc" />
@@ -90,8 +95,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="@drawable/boton"
         android:onClick="cargarImagen"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:text="@string/btnCrearPerfil"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/btnSiguiente"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="@+id/btnSiguiente"
@@ -102,8 +111,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="@drawable/boton"
         android:onClick="btnguardar"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:text="@string/btnContinuar"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnCambiarImagen" />

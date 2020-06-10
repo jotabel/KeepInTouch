@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.service.autofill.Dataset;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -59,7 +60,7 @@ public class VerChatActivity extends AppCompatActivity {
     private ImageButton btnEnviar;
     private ImageButton btnEnviarFoto;
 
-    private String numeroTelfChat,nombre,imagen;
+    private String numeroTelfChat,nombre,imagen,otroNumero,main="",otroNombre,otroUid;
     private String snombre,simagen,lafotoenviada,nombreImagen;
 
     private String idConversacion;
@@ -101,17 +102,21 @@ public class VerChatActivity extends AppCompatActivity {
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(idConversacion.length()>1){
+                if(etMensaje.getText().length()>0) {
+                    if (idConversacion.length() > 1) {
 
-                    miReferencia.child("chats").child(idConversacion).push().setValue(new MensajeEnviar(
-                            numeroTelfChat,etMensaje.getText().toString(),"1",nombre,imagen, ServerValue.TIMESTAMP));
-                }else{
-                    idConversacion= UUID.randomUUID().toString();
+                        miReferencia.child("chats").child(idConversacion).push().setValue(new MensajeEnviar(
+                                numeroTelfChat, etMensaje.getText().toString(), "1", nombre, imagen, ServerValue.TIMESTAMP));
+                    } else {
+                        idConversacion = UUID.randomUUID().toString();
 
-                    System.out.println("numerotlf: "+numeroTelfChat+" mensaje: "+etMensaje.getText().toString()+" Hora: "+ServerValue.TIMESTAMP.toString());
+                        System.out.println("numerotlf: " + numeroTelfChat + " mensaje: " + etMensaje.getText().toString() + " Hora: " + ServerValue.TIMESTAMP.toString());
 
-                    miReferencia.child("chats").child(idConversacion).push().setValue(new MensajeEnviar(
-                            numeroTelfChat,etMensaje.getText().toString(),"1",nombre,imagen, ServerValue.TIMESTAMP));
+                        miReferencia.child("chats").child(idConversacion).push().setValue(new MensajeEnviar(
+                                numeroTelfChat, etMensaje.getText().toString(), "1", nombre, imagen, ServerValue.TIMESTAMP));
+                        miReferencia.child("perfiles").child(firebase.getCurrentUser().getUid()).child("chats").child(idConversacion).setValue(otroNumero);
+                        miReferencia.child("perfiles").child(otroUid).child("chats").child(idConversacion).setValue(otroNumero);
+                    }
                 }
                 etMensaje.setText("");
             }
@@ -141,9 +146,18 @@ public class VerChatActivity extends AppCompatActivity {
 
                 if(dataSnapshot.exists()){
 
-                    MensajeRecibir m = dataSnapshot.getValue(MensajeRecibir.class);
-                    adapter.addMensaje(m);
+                    System.out.println(idConversacion);
 
+                    if(main.equals("viene")) {
+                        MensajeRecibir m = dataSnapshot.getValue(MensajeRecibir.class);
+                        System.out.println();
+                        adapter.addMensaje(m);
+                    }else{
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            MensajeRecibir m = ds.getValue(MensajeRecibir.class);
+                            adapter.addMensaje(m);
+                        }
+                    }
                 }
 
             }
@@ -195,6 +209,9 @@ public class VerChatActivity extends AppCompatActivity {
         idConversacion=getIntent().getStringExtra("idconversacion");
         nombre=getIntent().getStringExtra("nombre");
         imagen=getIntent().getStringExtra("imagen");
+        otroNumero=getIntent().getStringExtra("otroNumero");
+        main=getIntent().getStringExtra("main");
+        otroNombre=getIntent().getStringExtra("otroNombre");
 
     }
 
@@ -224,17 +241,17 @@ public class VerChatActivity extends AppCompatActivity {
 
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
 
-                        if(ds.child("numero").equals(numeroTelfChat)){
+                        if(ds.child("numero").getValue().equals(otroNumero) || ds.child("nombre").getValue().equals(otroNombre)){
 
-                            simagen=dataSnapshot.child("imagen").getValue().toString();
-                            snombre=dataSnapshot.child("nombre").getValue().toString();
-
+                            simagen=ds.child("imagen").getValue().toString();
+                            snombre=ds.child("nombre").getValue().toString();
+                            otroUid=ds.child("uid").getValue().toString();
                         }
+                        if(ds.child("uid").getValue().equals(firebase.getCurrentUser().getUid())){
 
-                        if(ds.child("uid").equals(firebase.getCurrentUser().getUid())){
-                            nombre = dataSnapshot.child("nombre").getValue().toString();
-                            imagen = dataSnapshot.child("imagen").getValue().toString();
-                            numeroTelfChat = dataSnapshot.child("numero").getValue().toString();
+                            nombre = ds.child("nombre").getValue().toString();
+                            imagen = ds.child("imagen").getValue().toString();
+                            numeroTelfChat = ds.child("numero").getValue().toString();
                         }
 
                     }
@@ -314,8 +331,6 @@ public class VerChatActivity extends AppCompatActivity {
                         Uri downloaduri = task.getResult();
 
                         lafotoenviada=downloaduri.toString();
-
-                        System.out.println(lafotoenviada);
 
                         MensajeEnviar m = new MensajeEnviar(numeroTelfChat,lafotoenviada,"Foto","2",nombre,imagen,ServerValue.TIMESTAMP);
                         miReferencia.child("chats").child(idConversacion).push().setValue(m);

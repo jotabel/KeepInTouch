@@ -32,7 +32,6 @@ import es.iesalandalus.chat.models.Contactos;
 
 public class ContactosActivity extends AppCompatActivity {
 
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     FirebaseDatabase miBase;
     DatabaseReference miReferencia;
     FirebaseAuth firebase;
@@ -41,6 +40,8 @@ public class ContactosActivity extends AppCompatActivity {
     private ContactosAdapter eAdapter;
     private RecyclerView eRecyclerView;
     private ArrayList<Contactos> arrayContactos=new ArrayList<>();
+
+    private String valorAnterior="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,60 +68,15 @@ public class ContactosActivity extends AppCompatActivity {
 
     }
 
-    public void controlarPerimisosContactos(){
-        if (ContextCompat.checkSelfPermission(ContactosActivity.this,
-                Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(ContactosActivity.this,
-                    Manifest.permission.READ_CONTACTS)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(ContactosActivity.this,
-                        new String[]{Manifest.permission.READ_CONTACTS},
-                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Permission has already been granted
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
-        }
-    }
 
     public void ObtenerDatos(){
 
-        controlarPerimisosContactos();
 
-        String[] projeccion = new String[] { ContactsContract.Data._ID, ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE };
+        String[] projeccion = new String[] { ContactsContract.Data._ID,
+                ContactsContract.Data.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.TYPE };
         String selectionClause = ContactsContract.Data.MIMETYPE + "='" +
                 ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "' AND "
                 + ContactsContract.CommonDataKinds.Phone.NUMBER + " IS NOT NULL";
@@ -133,21 +89,14 @@ public class ContactosActivity extends AppCompatActivity {
                 null,
                 sortOrder);
 
-
-
-
         while(c.moveToNext()){
             //textView.append(" Nombre: " + c.getString(1) + " Número: " + c.getString(2)+"\n");
+
+            arrayContactos.clear();
             comprobarDatos(c.getString(2));
         }
         c.close();
 
-        /*contactsCursor = getContentResolver().query(
-                ContactsContract.Contacts.CONTENT_URI,   // URI de contenido para los contactos
-                projection,                        // Columnas a seleccionar
-                selectionClause                    // Condición del WHERE
-                selectionArgs,                     // Valores de la condición
-                sortOrder);                        // ORDER BY columna [ASC|DESC]*/
 
     }
 
@@ -159,13 +108,10 @@ public class ContactosActivity extends AppCompatActivity {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (ds.getValue().equals(curs)){
                         //Iguales
-
                         buscarDatosPersona(curs);
 
                     }else{
-
                         //No iguales
-
                     }
                 }
             }
@@ -186,24 +132,32 @@ public class ContactosActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                //vacio mi arraylist
-                    arrayContactos.clear();
+                    //vacio mi arraylist
                     for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                        System.out.println("numero de db "+ds.child("numero"));;
+                        System.out.println("numeropara comprobar "+ numero);
                         if (ds.child("numero").getValue().equals(numero)) {
                             //Iguales. AQUÍ ES DONDE SE VAN A IR INTRODUCIENDO LOS LA GENTE QUE SE
                             //PARA HACER EL RECLYCLERVIEW Y MOSTRAR A TODOS LOS CONTACTOS QUE USEN
                             //LA APLICACIÓN.
 
-                            Contactos cont=new Contactos(ds.child("uid").getValue().toString(),ds.child("numero").getValue().toString(),ds.child("nombre").getValue().toString(),ds.child("descripcion").getValue().toString(),ds.child("imagen").getValue().toString());
+                            if(!numero.equals(valorAnterior)) {
+                                Contactos cont=new Contactos(ds.child("uid").getValue().toString(),ds.child("numero").getValue().toString(),ds.child("nombre").getValue().toString(),ds.child("descripcion").getValue().toString(),ds.child("imagen").getValue().toString());
 
-                            arrayContactos.add(cont);
+                                System.out.println(cont.toString());
 
+                                arrayContactos.add(cont);
+                                valorAnterior = numero;
+                                System.out.println("valoranterior"+valorAnterior);
+                            }
                         } else {
 
                             //No iguales
 
                         }
                     }
+
+
                     eAdapter = new ContactosAdapter(arrayContactos, R.layout.mostrar_conctactos);
 
                     eAdapter.setOnClickListener(new View.OnClickListener() {
