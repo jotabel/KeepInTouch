@@ -26,7 +26,7 @@ public class VerContactoActivity extends AppCompatActivity {
 
     private String sdescripcion, snombre,snumero,simagen;
 
-    private String uid;
+    private String uid,idconversacion="";
 
     FirebaseDatabase miBase;
     DatabaseReference miReferencia;
@@ -51,7 +51,7 @@ public class VerContactoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Aquí hay que poner que se crea un chat nuevo
                 Intent i = new Intent(VerContactoActivity.this, VerChatActivity.class);
-                i.putExtra("idconversacion","");
+                i.putExtra("idconversacion",idconversacion);
                 i.putExtra("otroNumero",snumero);
                 i.putExtra("main","");
                 startActivity(i);
@@ -100,6 +100,26 @@ public class VerContactoActivity extends AppCompatActivity {
                     snumero=dataSnapshot.child("numero").getValue().toString();
                     sdescripcion=dataSnapshot.child("descripcion").getValue().toString();
                     snombre=dataSnapshot.child("nombre").getValue().toString();
+
+                    if(dataSnapshot.child("chats").exists()){
+
+                        for (DataSnapshot ds : dataSnapshot.child("chats").getChildren()){
+
+                            System.out.println("mi numero de telefono: "+firebase.getCurrentUser().getPhoneNumber());
+                            System.out.println("la key: "+ds.getValue());
+
+                            if (ds.getValue().toString().equals(firebase.getCurrentUser().getPhoneNumber())){
+
+                                idconversacion=ds.getKey();
+
+                                System.out.println(idconversacion);
+
+                            }
+
+                        }
+
+                    }
+
                 }else{
                     simagen="https://firebasestorage.googleapis.com/v0/b/proyectochat-d3ed4.appspot.com/o/img_comprimidas%2Fgenerica.jpg?alt=media&token=2bb98c5d-c677-4fc7-8cdc-b074c056106c";
                 }

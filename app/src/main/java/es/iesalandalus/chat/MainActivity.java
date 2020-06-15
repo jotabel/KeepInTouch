@@ -181,35 +181,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             for (DataSnapshot data : dataSnapshot.child("perfiles").getChildren()){
 
-                                System.out.println("Esto que se?"+ ds.getKey());
-                                System.out.println("y esto? "+data.child("chats").getKey());
 
                                 if(data.child("chats").child(ds.getKey()).exists()) {
                                         codigochat = ds.getKey();
                                         if (data.child("numero").getValue().equals(ds.getValue()) && ds.getKey().equals(codigochat)) {
 
                                             for (DataSnapshot losChatsGuardados : dataSnapshot.child("chats").getChildren()) {
+                                                System.out.println(losChatsGuardados.getKey());
+                                                if (codigochat.equals(losChatsGuardados.getKey())) {
 
+                                                    for (DataSnapshot snap : losChatsGuardados.getChildren()) {
 
-                                                for (DataSnapshot snap : losChatsGuardados.getChildren()) {
+                                                        System.out.println("los mensajes de cada chat: " + snap);
 
-                                                    if (snap.exists()) {
-                                                        mensaje = snap.child("mensaje").getValue().toString();
-                                                        Long codigoHora = Long.parseLong(snap.child("hora").getValue().toString());
-                                                        Date d = new Date(codigoHora);
-                                                        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-                                                        fecha = sdf.format(d);
-                                                        loschats = losChatsGuardados.getKey();
+                                                        if (snap.exists()) {
+                                                            mensaje = snap.child("mensaje").getValue().toString();
+                                                            Long codigoHora = Long.parseLong(snap.child("hora").getValue().toString());
+                                                            Date d = new Date(codigoHora);
+                                                            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+                                                            fecha = sdf.format(d);
+                                                            loschats = losChatsGuardados.getKey();
+                                                            System.out.println("los chats" + loschats);
+
+                                                        }
                                                     }
+                                                    Chat c = new Chat(data.child("nombre").getValue().toString(), fecha,
+                                                            data.child("imagen").getValue().toString(), mensaje, loschats);
+                                                    arrayChat.add(c);
                                                 }
-
-
                                             }
 
-
-                                            Chat c = new Chat(data.child("nombre").getValue().toString(), fecha,
-                                                    data.child("imagen").getValue().toString(), mensaje, loschats);
-                                            arrayChat.add(c);
 
 
 

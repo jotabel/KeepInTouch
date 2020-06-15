@@ -115,7 +115,7 @@ public class VerChatActivity extends AppCompatActivity {
                         miReferencia.child("chats").child(idConversacion).push().setValue(new MensajeEnviar(
                                 numeroTelfChat, etMensaje.getText().toString(), "1", nombre, imagen, ServerValue.TIMESTAMP));
                         miReferencia.child("perfiles").child(firebase.getCurrentUser().getUid()).child("chats").child(idConversacion).setValue(otroNumero);
-                        miReferencia.child("perfiles").child(otroUid).child("chats").child(idConversacion).setValue(otroNumero);
+                        miReferencia.child("perfiles").child(otroUid).child("chats").child(idConversacion).setValue(firebase.getCurrentUser().getPhoneNumber());
                     }
                 }
                 etMensaje.setText("");
@@ -140,22 +140,28 @@ public class VerChatActivity extends AppCompatActivity {
             }
         });
 
-        miReferencia.child("chats").child(idConversacion).addChildEventListener(new ChildEventListener() {
+        miReferencia.child("chats").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                 if(dataSnapshot.exists()){
 
-                    System.out.println(idConversacion);
+                    System.out.println("este es el id "+idConversacion);
+                    System.out.println("esta es la key "+dataSnapshot.getKey());
 
-                    if(main.equals("viene")) {
-                        MensajeRecibir m = dataSnapshot.getValue(MensajeRecibir.class);
-                        System.out.println();
-                        adapter.addMensaje(m);
-                    }else{
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            MensajeRecibir m = ds.getValue(MensajeRecibir.class);
-                            adapter.addMensaje(m);
+                    if(dataSnapshot.getKey().equals(idConversacion)) {
+                        System.out.println("son iguales las keys y el id");
+                        if (main.equals("viene")) {
+                            System.out.println("viene");
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                MensajeRecibir m = ds.getValue(MensajeRecibir.class);
+                                adapter.addMensaje(m);
+                            }
+                        } else {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                MensajeRecibir m = ds.getValue(MensajeRecibir.class);
+                                adapter.addMensaje(m);
+                            }
                         }
                     }
                 }
